@@ -5,6 +5,7 @@
     <string name="date_time"><![CDATA[Date&Time]]></string>
     <string name="text_heading">Simple Title Text</string>
     <string name="todo">TODO</string>
+    <string name="search_hint_editText">Search</string>
 
 </resources>
 

@@ -12,12 +12,13 @@
         android:id="@+id/news_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/search_input" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_switcher"
@@ -29,5 +30,27 @@
         android:src="@drawable/ic_brightness_2_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:drawableLeft="@drawable/ic_search_gray_24dp"
+        android:drawablePadding="8dp"
+        android:id="@+id/search_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:ems="10"
+        android:background="@drawable/search_input_style"
+        android:inputType="textPersonName"
+        android:hint="@string/search_hint_editText"
+        android:textColorHint="@color/content_text_color"
+        android:textColor="@color/content_text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:drawableStart="@drawable/ic_search_gray_24dp" />
 
 </android.support.constraint.ConstraintLayout>

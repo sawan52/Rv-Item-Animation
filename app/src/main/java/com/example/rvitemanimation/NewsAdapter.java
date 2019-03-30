@@ -7,29 +7,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
+public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> implements Filterable {
 
 
-    Context mContext;
-    List<NewsItem> mData;
-    boolean isDark = false;
+    private Context mContext;
+    private List<NewsItem> mData;
+    private List<NewsItem> mDataFiltered;
+    private boolean isDark = false;
 
     // added a new constructor for Dark Mode
     public NewsAdapter(Context mContext, List<NewsItem> mData, boolean isDark) {
         this.mContext = mContext;
         this.mData = mData;
         this.isDark = isDark;
+        this.mDataFiltered = mData;
     }
 
     public NewsAdapter(Context mContext, List<NewsItem> mData) {
         this.mContext = mContext;
         this.mData = mData;
+        this.mDataFiltered = mData;
     }
 
     @NonNull
@@ -57,16 +63,80 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
         newsViewHolder.container.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_scale_animation));
 
-        newsViewHolder.heading.setText(mData.get(position).getTitle());
-        newsViewHolder.description.setText(mData.get(position).getContent());
-        newsViewHolder.date.setText(mData.get(position).getDate());
-        newsViewHolder.userImage.setImageResource(mData.get(position).getUserPhoto());
+//        newsViewHolder.heading.setText(mData.get(position).getTitle());
+//        newsViewHolder.description.setText(mData.get(position).getContent());
+//        newsViewHolder.date.setText(mData.get(position).getDate());
+//        newsViewHolder.userImage.setImageResource(mData.get(position).getUserPhoto());
+
+
+        // change all the Views according to Filter...(mData changes to mDataFiltered)
+        newsViewHolder.heading.setText(mDataFiltered.get(position).getTitle());
+        newsViewHolder.description.setText(mDataFiltered.get(position).getContent());
+        newsViewHolder.date.setText(mDataFiltered.get(position).getDate());
+        newsViewHolder.userImage.setImageResource(mDataFiltered.get(position).getUserPhoto());
 
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
+//        return mData.size();
+        return mDataFiltered.size();
+    }
+
+    // implements Filterable interface and override this method to perform search/filter related operation
+    @Override
+    public Filter getFilter() {
+
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+
+                String KEY = constraint.toString(); // get the corresponding searching text from Search edit Text
+                if (KEY.isEmpty()){
+
+                    // if nothing is searched then set the mDataFiltered list to mData List
+                    mDataFiltered = mData;
+                }
+                else {
+
+                    // create a new List for filtered / searched data
+                    List<NewsItem> listFiltered = new ArrayList<>();
+
+                    // now search in each row of NewsItem type data from mData List...
+                    for (NewsItem row : mData){
+
+                        // if any Title row contains that KEY then add it in the listFiltered of type List
+                        if (row.getTitle().toLowerCase().contains(KEY.toLowerCase())){
+                            listFiltered.add(row);
+                        }
+                        // else if any Content row contains that KEY then add it in the listFiltered of type List
+                        else if (row.getContent().toLowerCase().contains(KEY.toLowerCase())){
+                            listFiltered.add(row);
+                        }
+                    }
+
+                    // now set the listFiltered data in mDataFiltered List after filtering / searching the KEY from mData List items
+                    mDataFiltered = listFiltered;
+                }
+
+                // now return the filterResult
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = mDataFiltered;
+                return filterResults;
+
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                // publish the filter result and notify the change on the View/Screen
+                mDataFiltered = (List<NewsItem>) results.values;
+                notifyDataSetChanged();
+
+            }
+        };
+
+
     }
 
 
@@ -91,7 +161,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             }
 
         }
-
 
         private void setDarkTheme() {
 
